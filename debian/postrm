@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+set -e
+
+. /etc/default/openmediavault
+. /usr/share/openmediavault/scripts/helper-functions
+
+case "$1" in
+    purge)
+        if [ -f "/var/run/sonarr/sonarr.pid" ]; then
+            PID=`cat /var/run/sonarr/sonarr.pid`
+            if kill -0 $PID > /dev/null 2>&1; then
+                kill -9 $PID
+                rm -Rf /var/run/sonarr/sonarr.pid
+            fi
+        fi
+
+        if [ -d "/var/run/sonarr" ]; then
+            rm -Rf /var/run/sonarr
+        fi
+        omv_config_delete "//services/sonarr"
+
+        userdel -r sonarr
+
+        if [ -d "/opt/Sonarr" ]; then
+            rm -Rf /opt/Sonarr
+        fi
+    ;;
+
+        remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument '$1'" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

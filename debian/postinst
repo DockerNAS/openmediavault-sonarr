@@ -1,0 +1,59 @@
+#!/bin/sh
+
+set -e
+
+. /etc/default/openmediavault
+. /usr/share/openmediavault/scripts/helper-functions
+
+case "$1" in
+    configure)
+        if ! getent passwd sonarr >/dev/null 2>&1; then
+            echo "Adding sonarr user..."
+            useradd --create-home --groups users --no-user-group --shell /usr/sbin/nologin sonarr
+            insserv -d sonarr
+        else
+            echo "sonarr user already exists."
+        fi
+
+        if [ ! -d "/opt/Sonarr" ]; then
+            echo "Downloading latest files..."
+            cd /opt
+            wget -q "http://update.nzbdrone.com/v2/master/mono/NzbDrone.master.tar.gz"
+            echo "Downloading complete, extracting files..."
+            tar -zxvf NzbDrone.master.tar.gz
+            rm -Rf NzbDrone.master.tar.gz
+            mv /opt/NzbDrone /opt/Sonarr
+            chown sonarr:users /opt/Sonarr -R
+        fi
+
+        if [ -f "/var/run/sonarr/sonarr.pid" ]; then
+            echo "Cleaning old pid file..."
+            rm -Rf /var/run/sonarr/sonarr.pid
+        fi
+
+        if ! omv_config_exists "/config/services/sonarr"; then
+            echo "Initial configuration."
+            object="<enable>0</enable>"
+            object="${object}<showtab>0</showtab>"
+            object="${object}<port>8989</port>"
+            omv_config_add_element "/config/services" "sonarr" "${object}" true
+        fi
+
+        omv_install_fixperms
+
+        # Activate package triggers. These triggers are only set during the
+        # package installation.
+        dpkg-trigger update-fixperms
+        dpkg-trigger update-locale
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument" >&2
+        exit 1
+    ;;
+esac
+
+exit 0

@@ -1,0 +1,14 @@
+Source: openmediavault-sonarr
+Section: misc
+Priority: optional
+Maintainer: OpenMediaVault Plugin Developers <plugins@omv-extras.org>
+Build-Depends: debhelper (>= 9 )
+Standards-Version: 3.9.3
+
+Package: openmediavault-sonarr
+Architecture: all
+Depends: ${misc:Depends}, openmediavault (>= 1.0), libmono-cil-dev (>= 3.10), sqlite3 (>= 3.7), mediainfo (>= 0.7.52)
+Priority: optional
+Homepage: https://sonarr.tv/
+Description: OpenMediaVault Sonarr(NzbDrone) plugin
+ Sonarr is a an internet PVR
