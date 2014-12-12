@@ -1,3 +1,9 @@
+openmediavault-sonarr (1.1) stable; urgency=low
+
+  * Add custom debian/control field XB-Plugin-Section
+
+ -- OpenMediaVault Plugin Developers <plugins@omv-extras.org>  Fri, 12 Dec 2014 07:23:12 -0600
+
 openmediavault-sonarr (1.0) stable; urgency=low
 
   * Initial release
