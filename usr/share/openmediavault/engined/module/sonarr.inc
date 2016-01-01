@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2013-2014 OpenMediaVault Plugin Developers
+ * Copyright (C) 2014 OpenMediaVault Plugin Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 
 require_once "openmediavault/config.inc";
 require_once "openmediavault/error.inc";
-require_once "openmediavault/initscript.inc";
 require_once "openmediavault/module.inc";
+require_once "openmediavault/systemctl.inc";
 require_once "openmediavault/util.inc";
 
 class OMVModuleSonarr extends OMVModuleServiceAbstract implements
@@ -60,13 +60,13 @@ class OMVModuleSonarr extends OMVModuleServiceAbstract implements
             );
         }
 
-        $initd = new OMVSysVInitScript($this->getPluginName());
+        $systemCtl = new OMVSystemCtl($this->getPluginName());
 
         return array(
             "name"    => $this->getName(),
             "title"   => gettext($this->getName()),
             "enabled" => boolval($object["enable"]),
-            "running" => $initd->status() == 0
+            "running" => $systemCtl->isActive()
         );
     }
 
@@ -87,14 +87,14 @@ class OMVModuleSonarr extends OMVModuleServiceAbstract implements
             return;
         }
 
-        $initd = new OMVSysVInitScript($this->getPluginName(), true);
-        $initd->exec();
+        $systemCtl = new OMVSystemCtl($this->getPluginName());
+        $systemCtl->enable(true); 
     }
 
     public function stopService()
     {
-        $initd = new OMVSysVInitScript($this->getPluginName());
-        $initd->exec();
+        $systemCtl = new OMVSystemCtl($this->getPluginName());
+        $systemCtl->disable(true);
     }
 
     public function bindListeners(OMVNotifyDispatcher $dispatcher)

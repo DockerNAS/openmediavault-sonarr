@@ -7,6 +7,16 @@ set -e
 
 case "$1" in
     configure)
+        # Set the default settings of the service package to those expected by
+        # OpenMediaVault.
+        if [ -z "${2}" ]; then
+            systemctl stop sonarr.service
+            systemctl disable sonarr.service
+        fi
+
+        SERVICE_XPATH_NAME="sonarr"
+        SERVICE_XPATH="/config/services/${SERVICE_XPATH_NAME}"
+
         if ! getent passwd sonarr >/dev/null 2>&1; then
             echo "Adding sonarr user..."
             useradd --create-home --groups users --no-user-group --shell /usr/sbin/nologin sonarr
@@ -31,15 +41,13 @@ case "$1" in
             rm -Rf /var/run/sonarr/sonarr.pid
         fi
 
-        if ! omv_config_exists "/config/services/sonarr"; then
-            echo "Initial configuration."
-            object="<enable>0</enable>"
-            object="${object}<showtab>0</showtab>"
-            object="${object}<port>8989</port>"
-            omv_config_add_element "/config/services" "sonarr" "${object}" true
-        fi
+        if ! omv_config_exists "${SERVICE_XPATH}"; then
+            omv_config_add_element "/config/services" "${SERVICE_XPATH_NAME}"
 
-        omv_install_fixperms
+            omv_config_add_element "${SERVICE_XPATH}" "enable" "0"
+            omv_config_add_element "${SERVICE_XPATH}" "showtab" "0"
+            omv_config_add_element "${SERVICE_XPATH}" "port" "8989"
+        fi
 
         # Activate package triggers. These triggers are only set during the
         # package installation.
@@ -55,5 +63,7 @@ case "$1" in
         exit 1
     ;;
 esac
+
+#DEBHELPER#
 
 exit 0

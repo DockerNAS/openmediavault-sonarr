@@ -14,13 +14,16 @@ case "$1" in
                 rm -Rf /var/run/sonarr/sonarr.pid
             fi
         fi
+		
+        if getent passwd sonarr >/dev/null 2>&1; then
+            userdel -rf sonarr
+        fi
 
         if [ -d "/var/run/sonarr" ]; then
             rm -Rf /var/run/sonarr
         fi
-        omv_config_delete "//services/sonarr"
 
-        userdel -r sonarr
+        omv_config_delete "//services/sonarr"
 
         if [ -d "/opt/Sonarr" ]; then
             rm -Rf /opt/Sonarr
