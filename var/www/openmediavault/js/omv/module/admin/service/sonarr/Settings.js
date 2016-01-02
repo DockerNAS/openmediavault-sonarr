@@ -75,6 +75,27 @@ Ext.define("OMV.module.admin.service.sonarr.Settings", {
         me.callParent(arguments);
     },
 
+    getButtonItems: function() {
+        var items = this.callParent(arguments);
+
+        items.push({
+            id: this.getId() + "-show",
+            xtype: "button",
+            text: _("Sonarr Webui"),
+            icon: "images/sonarr.svg",
+            iconCls: Ext.baseCSSPrefix + "btn-icon-16x16",
+            scope: this,
+            handler: function() {
+                var port = this.getForm().findField("port").getValue();
+                var link = "http://" + location.hostname + ":" + port + "/";
+
+                window.open(link, "_blank");
+            }
+        });
+
+        return items;
+    },
+
     getFormItems : function() {
         var me = this;
 
@@ -106,18 +127,6 @@ Ext.define("OMV.module.admin.service.sonarr.Settings", {
                 allowDecimals: false,
                 allowBlank: false,
                 value: 8989
-            },{
-                xtype   : "button",
-                name    : "opensonarr",
-                text    : _("Sonarr Web Interface"),
-                scope   : this,
-                handler : function() {
-                    var me = this;
-                    var port = me.getForm().findField("port").getValue();
-                    var link = "http://" + location.hostname + ":" + port + "/";
-                    window.open(link, "_blank");
-                },
-                margin : "0 0 5 0"
             }]
         }];
     }
