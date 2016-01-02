@@ -39,7 +39,7 @@ class OMVModuleSonarr extends OMVModuleServiceAbstract implements
 
     private function getXPath()
     {
-        return sprintf("//services/%s", $this->getPluginName());
+        return sprintf("/config/services/%s", $this->getPluginName());
     }
 
     public function getName()
