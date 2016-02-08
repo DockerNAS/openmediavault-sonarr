@@ -21,8 +21,7 @@ case "$1" in
             echo "Adding sonarr user..."
             adduser --quiet \
                     --system \
-                    --ingroup sonarr \
-                    --no-create-home \
+                    --group \
                     --disabled-password \
                     sonarr
         else
