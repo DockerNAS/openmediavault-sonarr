@@ -23,7 +23,7 @@ case "$1" in
             rm -Rf /var/run/sonarr
         fi
 
-        omv_config_delete "//services/sonarr"
+        omv_config_delete "/config/services/sonarr"
 
         if [ -d "/opt/Sonarr" ]; then
             rm -Rf /opt/Sonarr

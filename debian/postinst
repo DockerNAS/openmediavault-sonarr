@@ -19,8 +19,12 @@ case "$1" in
 
         if ! getent passwd sonarr >/dev/null 2>&1; then
             echo "Adding sonarr user..."
-            useradd --create-home --groups users --no-user-group --shell /usr/sbin/nologin sonarr
-            insserv -d sonarr
+            adduser --quiet \
+                    --system \
+                    --ingroup sonarr \
+                    --no-create-home \
+                    --disabled-password \
+                    sonarr
         else
             echo "sonarr user already exists."
         fi
@@ -33,7 +37,7 @@ case "$1" in
             tar -zxvf NzbDrone.master.tar.gz
             rm -Rf NzbDrone.master.tar.gz
             mv /opt/NzbDrone /opt/Sonarr
-            chown sonarr:users /opt/Sonarr -R
+            chown sonarr:sonarr /opt/Sonarr -R
         fi
 
         if [ -f "/var/run/sonarr/sonarr.pid" ]; then
