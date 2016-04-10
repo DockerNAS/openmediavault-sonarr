@@ -11,6 +11,8 @@ ExecStart=/usr/bin/mono /opt/Sonarr/NzbDrone.exe -nobrowser
 TimeoutStopSec=20
 KillMode=process
 Restart=on-failure
+StandardOutput=null
+StandardError=null
 
 [Install]
 WantedBy=multi-user.target
